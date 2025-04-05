@@ -1,0 +1,60 @@
+# Xcode
+*.xcuserdata/
+ExpenseManager.xcodeproj/project.xcworkspace/xcshareddata/
+*.xcuserstate
+*.xcuserdatad
+*.moved-aside
+DerivedData/
+.idea/
+*.hmap
+*.ipa
+*.app.dSYM.zip
+*.app.dSYM
+
+# Build
+build/
+Build/
+
+# SwiftPM
+.build/
+.swiftpm/xcode/package.xcworkspace/
+
+# CocoaPods
+Pods/
+Podfile.lock
+Podfile~
+
+# Carthage
+Carthage/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Firebase
+GoogleService-Info.plist
+
+# Swift Package Manager
+Package.resolved
+
+# Xcode Cloud
+.xcscmblueprint
+
+# Archives
+*.xcarchive
+
+# Logs
+*.log
+
+# Temporary
+*.tmp
+*.temp
+
+# User-specific
+*.swp
+*.swo
+*.orig
+.DS_Store
+*.bak
