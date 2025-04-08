@@ -25,48 +25,57 @@ struct EditTransactionView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                SearchBar(searchText: $viewModel.searchText)
-                Form {
-                    TextField("Введите сумму", text: $amount)
-                        .keyboardType(.decimalPad)
-                        .padding(8)
-                        .onChange(of: amount) { _, newValue in
-                            // Очистить нечисловые символы, чтобы пользователь мог вводить только цифры
-                            let filtered = newValue.filter { "0123456789.".contains($0) }
-                            if filtered != newValue {
-                                self.amount = filtered
+            ZStack {
+                VStack {
+                    SearchBar(searchText: $viewModel.searchText)
+                    Form {
+                        TextField("Введите сумму", text: $amount)
+                            .keyboardType(.decimalPad)
+                            .padding(8)
+                            .onChange(of: amount) { _, newValue in
+                                // Очистить нечисловые символы, чтобы пользователь мог вводить только цифры
+                                let filtered = newValue.filter { "0123456789.".contains($0) }
+                                if filtered != newValue {
+                                    self.amount = filtered
+                                }
+                            }
+                        
+                        CategoryGridView(selectedCategory: $category)
+                            .padding(.top, 12)
+                    }
+                    .opacity(viewModel.filteredCategories.isEmpty ? 0 : 1)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button("Отмена") {
+                                presentationMode.wrappedValue.dismiss()
                             }
                         }
-
-                    CategoryGridView(selectedCategory: $category)
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Отмена") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("Сохранить") {
-                            guard let validAmount = Int(amount), let selectedCategory = category else { return }
-                            
-                            if let index = MainScreenViewModel.shared.transactions.firstIndex(where: { $0.id == transaction?.id }) {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("Сохранить") {
+                                guard let validAmount = Int(amount), let selectedCategory = category else { return }
                                 
-                                // Обновляем транзакцию
-                                MainScreenViewModel.shared.transactions[index].amount = validAmount
-                                MainScreenViewModel.shared.transactions[index].category.title = selectedCategory.title
-                                MainScreenViewModel.shared.transactions[index].category.icon = selectedCategory.icon
+                                if let index = MainScreenViewModel.shared.transactions.firstIndex(where: { $0.id == transaction?.id }) {
+                                    
+                                    // Обновляем транзакцию
+                                    MainScreenViewModel.shared.transactions[index].amount = validAmount
+                                    MainScreenViewModel.shared.transactions[index].category.title = selectedCategory.title
+                                    MainScreenViewModel.shared.transactions[index].category.icon = selectedCategory.icon
+                                    
+                                }
                                 
+                                presentationMode.wrappedValue.dismiss()
                             }
-                            
-                            presentationMode.wrappedValue.dismiss()
+                            .disabled(amount.isEmpty || category == nil)
                         }
-                        .disabled(amount.isEmpty || category == nil)
                     }
+                    .toolbarBackground(.white, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
                 }
-                .toolbarBackground(.white, for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+                if viewModel.filteredCategories.isEmpty {
+                    Text("Ничего не найдено")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
             }
         }
     }

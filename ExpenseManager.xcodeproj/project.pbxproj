@@ -28,6 +28,7 @@
 		CE83E7442DA310CD003E05FF /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE83E7432DA310CD003E05FF /* SearchBar.swift */; };
 		CEA5BFFC2D9938E4008A0F7B /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA5BFFB2D9938E4008A0F7B /* TabBarView.swift */; };
 		CEA5BFFE2D993989008A0F7B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA5BFFD2D993989008A0F7B /* SettingsView.swift */; };
+		CEA6EC4C2DA5724B0073F61F /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA6EC4B2DA5724B0073F61F /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 		CE83E7432DA310CD003E05FF /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		CEA5BFFB2D9938E4008A0F7B /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
 		CEA5BFFD2D993989008A0F7B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CEA6EC4B2DA5724B0073F61F /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				CE7C4BFF2D93CA3A007722BB /* ExpenseManagerApp.swift */,
+				CEA6EC4B2DA5724B0073F61F /* Extensions.swift */,
 				CE64F4F62D93FDFF009BA640 /* Model */,
 				CE8264CF2DA1B40600695728 /* View */,
 				CE8264D02DA1B42E00695728 /* ViewModel */,
@@ -236,6 +239,7 @@
 				CE7C4C002D93CA3A007722BB /* ExpenseManagerApp.swift in Sources */,
 				CE64F4FA2D93FE76009BA640 /* Category.swift in Sources */,
 				CE83E7442DA310CD003E05FF /* SearchBar.swift in Sources */,
+				CEA6EC4C2DA5724B0073F61F /* Extensions.swift in Sources */,
 				CE64F4F52D93FDD2009BA640 /* AddExpenseView.swift in Sources */,
 				CE64F4ED2D93FB72009BA640 /* MainScreenViewModel.swift in Sources */,
 				CE64F4EF2D93FC1F009BA640 /* ChartPieView.swift in Sources */,

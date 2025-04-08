@@ -14,6 +14,12 @@ class MainScreenViewModel: ObservableObject {
     
     init() {
         //UserDefaults.standard.removeObject(forKey: "transactions")
+        
+        //let dateFormatter = DateFormatter()
+        //dateFormatter.dateFormat = "dd.MM.yyyy"
+        
+        //let category = Category(title: "Продукты", icon: "cart.fill")
+        //transactions.append(Transaction(date: dateFormatter.date(from: "28.03.2025")!, amount: 150, category: category))
         loadTransactions()
     }
     
@@ -29,26 +35,31 @@ class MainScreenViewModel: ObservableObject {
     var groupedTransactions: [(key: String, value: [Transaction])] = []
     
     private func updateGroupedTransactions() {
-        let now = Date()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMMM"
         
+        let now = Date()
         let recentTransactions = transactions.filter { transaction in
             if let daysDifference = Calendar.current.dateComponents([.day], from: transaction.date, to: now).day {
-                return daysDifference <= 1
+                return daysDifference <= 13 // 2 недели
             }
             return false
         }
         
         let grouped = Dictionary(grouping: recentTransactions) { transaction in
+            
+            let currentLocale = Locale.current.language.languageCode?.identifier
+            let today = currentLocale == "ru" ? "Сегодня" : "Today"
+            let yesterday = currentLocale == "ru" ? "Вчера" : "Yesterday"
+            
             if let daysDifference = Calendar.current.dateComponents([.day], from: transaction.date, to: now).day {
                 if daysDifference == 0 {
-                    return "Сегодня"
+                    return today
                 } else if daysDifference == 1 {
-                    return "Вчера"
+                    return yesterday
+                } else if daysDifference < 1 {
+                    return transaction.date.formattedMonthCapitalized()
                 }
             }
-            return formatter.string(from: transaction.date)
+            return transaction.date.formattedMonthCapitalized()
         }
         
         groupedTransactions = grouped.map { (key, value) in

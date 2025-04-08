@@ -18,52 +18,61 @@ struct AddExpenseView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                SearchBar(searchText: $viewModel.searchText)
-                Form {
-                    TextField("Сумма", text: $amount)
-                        .keyboardType(.decimalPad)
-                        .padding(8)
-                    CategoryGridView(selectedCategory: $selectedCategory)
-                }
-                .onChange(of: amount) { _, newValue in
-                    let filtered = newValue.filter { "0123456789.".contains($0) }
-                    
-                    // Проверяем количество точек (должна быть не более одной)
-                    let dotCount = filtered.filter { $0 == "." }.count
-                    if dotCount > 1 {
-                        amount.removeLast()
+            ZStack {
+                VStack {
+                    SearchBar(searchText: $viewModel.searchText)
+                    Form {
+                        TextField("Сумма", text: $amount)
+                            .keyboardType(.decimalPad)
+                            .padding(8)
+                        CategoryGridView(selectedCategory: $selectedCategory)
+                            .padding(.top, 12)
                     }
-                    
-                    // Ограничение на два знака после точки
-                    if let dotIndex = filtered.firstIndex(of: ".") {
-                        let afterDot = filtered[dotIndex...].dropFirst() // Символы после точки
-                        if afterDot.count > 2 {
+                    .opacity(viewModel.filteredCategories.isEmpty ? 0 : 1)
+                    .onChange(of: amount) { _, newValue in
+                        let filtered = newValue.filter { "0123456789.".contains($0) }
+                        
+                        // Проверяем количество точек (должна быть не более одной)
+                        let dotCount = filtered.filter { $0 == "." }.count
+                        if dotCount > 1 {
                             amount.removeLast()
                         }
-                    }
-                }
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button("Отмена") {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                        .foregroundStyle(.red)
-                    }
-                    ToolbarItem(placement: .navigationBarTrailing) {
                         
-                        Button("Добавить") {
-                            if let category = selectedCategory {
-                                let transaction = Transaction(amount: -Int(amount)!, category: category)
-                                MainScreenViewModel.shared.transactions.append(transaction)
+                        // Ограничение на два знака после точки
+                        if let dotIndex = filtered.firstIndex(of: ".") {
+                            let afterDot = filtered[dotIndex...].dropFirst() // Символы после точки
+                            if afterDot.count > 2 {
+                                amount.removeLast()
                             }
-                            presentationMode.wrappedValue.dismiss()
                         }
-                        .disabled(amount.isEmpty || selectedCategory == nil)
                     }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button("Отмена") {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                            .foregroundStyle(.red)
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            
+                            Button("Добавить") {
+                                if let category = selectedCategory {
+                                    let transaction = Transaction(amount: -Int(amount)!, category: category)
+                                    MainScreenViewModel.shared.transactions.append(transaction)
+                                }
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                            .disabled(amount.isEmpty || selectedCategory == nil)
+                        }
+                    }
+                    .toolbarBackground(.white, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
                 }
-                .toolbarBackground(.white, for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
+                if viewModel.filteredCategories.isEmpty {
+                    Text("Ничего не найдено")
+                        .foregroundColor(.gray)
+                        .padding()
+                }
             }
         }
     }

@@ -15,27 +15,13 @@ struct ChartPieView: View {
     @ObservedObject var chartViewModel = ChartPieViewModel.shared
     
     var displayedDateRange: String {
-        
-        let dayFormatter = DateFormatter()
-        dayFormatter.dateFormat = "d"
-        dayFormatter.locale = Locale(identifier: "ru_RU")
-
-        let monthFormatter = DateFormatter()
-        monthFormatter.locale = Locale(identifier: "ru_RU")
-        monthFormatter.dateFormat = "MMMM"
-
-        func formatDate(_ date: Date) -> String {
-            let day = dayFormatter.string(from: date)
-            let month = monthFormatter.string(from: date).prefix(1).uppercased() + monthFormatter.string(from: date).dropFirst()
-            return "\(day) \(month)"
-        }
 
         if let start = calendarViewModel.selectedStartDate, let end = calendarViewModel.selectedEndDate {
-            return "\(formatDate(start)) - \(formatDate(end))"
+            return "\(start.formattedMonthCapitalized()) - \(end.formattedMonthCapitalized())"
         } else if let start = calendarViewModel.selectedStartDate {
-            return formatDate(start)
+            return start.formattedMonthCapitalized()
         } else {
-            return formatDate(calendarViewModel.currentDate)
+            return calendarViewModel.currentDate.formattedMonthCapitalized()
         }
     }
       
