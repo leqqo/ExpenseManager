@@ -16,42 +16,45 @@ struct MainScreenView: View {
     @State private var showActionSheet: Bool = false
     @State private var selectedTransaction: Transaction?
     @State private var showEditView: Bool = false
+    @State private var selection = 0
     
     var body: some View {
         NavigationView {
-                    VStack {
-                        ChartPieView()
-                            .padding(.top, 36)
-                        List {
+            ScrollView {
+                VStack {
+                    ChartPieView()
+                        .padding(.top, 36)
+                    
+                    Picker("Picker", selection: $selection) {
+                        Text("Статистика").tag(0)
+                        Text("История").tag(1)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.top)
+                    .padding(.horizontal)
+                    .opacity(viewModel.transactions.isEmpty ? 0 : 1)
+                    
+                    if selection == 0 {
+                        LazyVStack(spacing: 12) {
+                            ForEach(viewModel.cachedExpensesByCategory) { transaction in
+                                HStackView(transactionTitle: transaction.title, categoryIcon: transaction.category.icon, amount: Int(transaction.amount))
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top)
+                    } else {
+                        LazyVStack(spacing: 12) {
                             ForEach(viewModel.groupedTransactions, id: \.key) { key, dayTransactions in
-                                Section(header:
-                                            HStack {
-                                    Text(key)
-                                        .font(.subheadline)
-                                        .fontWeight(.medium)
-                                        .foregroundColor(.secondary)
-                                        .padding(.vertical, 6)
-                                        .padding(.leading, 24)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .background(Color(uiColor: .systemBackground))
-                                }
-                                    .listRowInsets(EdgeInsets())
+                                Section(header: Text(key)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 4)
+                                    .padding(.top)
                                 ) {
-                                    
                                     ForEach(dayTransactions) { transaction in
-                                        HStack {
-                                            Label(title: {
-                                                Text(transaction.category.title)
-                                                    .padding(.leading, -6)
-                                            }, icon: {
-                                                Image(systemName: transaction.icon)
-                                            })
-                                                .font(.body)
-                                            Spacer()
-                                            Text("\(formatAmount(transaction.amount))")
-                                                .fontWeight(.medium)
-                                        }
-                                        .listRowSeparator(.hidden)
+                                        HStackView(transactionTitle: transaction.category.title, categoryIcon: transaction.icon, amount: transaction.amount)
                                         .background(Color(uiColor: .systemBackground))
                                         .clipShape(Rectangle())
                                         .onTapGesture {
@@ -62,7 +65,7 @@ struct MainScreenView: View {
                                 }
                             }
                         }
-                        .listStyle(.plain)
+                        .padding(.horizontal)
                         .actionSheet(isPresented: $showActionSheet) {
                             ActionSheet(
                                 title: Text("Выберите действие"),
@@ -79,20 +82,22 @@ struct MainScreenView: View {
                             )
                         }
                     }
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: { showAddExpense = true }) {
-                                Image(systemName: "plus")
-                                    .font(.title2)
-                            }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: { showAddExpense = true }) {
+                            Image(systemName: "plus")
+                                .font(.title2)
                         }
                     }
-                    .toolbarBackground((Color(uiColor: .systemBackground)), for: .navigationBar)
-                    .toolbarBackground(.visible, for: .navigationBar)
-                    .sheet(isPresented: $showEditView) {
-                        EditTransactionView(transaction: selectedTransaction)
-                    }
                 }
+                .toolbarBackground((Color(uiColor: .systemBackground)), for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .sheet(isPresented: $showEditView) {
+                    EditTransactionView(transaction: selectedTransaction)
+                }
+            }
+        }
             .sheet(isPresented: $showAddExpense, content: {
                 AddExpenseView()
             })
@@ -109,19 +114,34 @@ struct MainScreenView: View {
             viewModel.transactions.remove(at: index)
         }
     }
-    
-    func formatAmount(_ amount: Int) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.groupingSeparator = " " // Разделитель тысяч — пробел
-        formatter.maximumFractionDigits = 0 // Без копеек
-
-        let formattedAmount = formatter.string(from: NSNumber(value: abs(amount))) ?? "\(amount)"
-        return "-\(formattedAmount) ₴"
-    }
-
 }
 
 #Preview {
     MainScreenView()
+}
+
+struct HStackView: View {
+    
+    var transactionTitle: String
+    var categoryIcon: String
+    var amount: Int
+    
+    var body: some View {
+        HStack {
+            Label(title: {
+                Text(transactionTitle)
+            }, icon: {
+                Image(systemName: categoryIcon)
+                    .foregroundStyle(.blue)
+                    .font(.title2)
+                    .frame(width: 32, height: 32)
+                    .padding(.trailing, 2)
+            })
+            Spacer()
+            Text("\(amount.formatAmount())")
+                .fontWeight(.medium)
+        }
+    }
+    
+   
 }

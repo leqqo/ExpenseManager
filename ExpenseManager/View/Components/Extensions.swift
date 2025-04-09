@@ -20,3 +20,15 @@ extension Date {
         return "\(day) \(month)"
     }
 }
+
+extension Int {
+    func formatAmount() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.groupingSeparator = " " // Разделитель тысяч — пробел
+        formatter.maximumFractionDigits = 0 // Без копеек
+        
+        let formattedAmount = formatter.string(from: NSNumber(value: self)) ?? "\(0)"
+        return "\(formattedAmount) ₴"
+    }
+}

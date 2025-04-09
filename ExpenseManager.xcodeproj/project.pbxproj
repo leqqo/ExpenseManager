@@ -99,7 +99,6 @@
 			isa = PBXGroup;
 			children = (
 				CE7C4BFF2D93CA3A007722BB /* ExpenseManagerApp.swift */,
-				CEA6EC4B2DA5724B0073F61F /* Extensions.swift */,
 				CE64F4F62D93FDFF009BA640 /* Model */,
 				CE8264CF2DA1B40600695728 /* View */,
 				CE8264D02DA1B42E00695728 /* ViewModel */,
@@ -122,6 +121,7 @@
 			children = (
 				CE64F4F22D93FD7D009BA640 /* CategoryGridView.swift */,
 				CE83E7432DA310CD003E05FF /* SearchBar.swift */,
+				CEA6EC4B2DA5724B0073F61F /* Extensions.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";

@@ -24,6 +24,15 @@ struct ChartPieView: View {
             return calendarViewModel.currentDate.formattedMonthCapitalized()
         }
     }
+    
+    
+    var transactionsTotalAmount: Int {
+        
+        var totalAmount = 0
+        totalAmount = mainScreenViewModel.cachedExpensesByCategory.reduce(0) { $0 + abs(Int($1.amount))
+        }
+        return totalAmount
+    }
       
     var body: some View {
         
@@ -45,25 +54,29 @@ struct ChartPieView: View {
         } else {
             
             VStack {
-                Text(displayedDateRange)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.blue)
-                    .onTapGesture {
-                        calendarViewModel.isCalendarShow.toggle()
-                    }
-                    .sheet(isPresented: $calendarViewModel.isCalendarShow) {
-                        CalendarView()
-                    }
-                Text("Расходы по категориям")
-                    .font(.subheadline)
-                    .padding(.top, 2)
+                VStack(spacing: 12) {
+                    Text(displayedDateRange)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.blue)
+                        .onTapGesture {
+                            calendarViewModel.isCalendarShow.toggle()
+                        }
+                        .sheet(isPresented: $calendarViewModel.isCalendarShow) {
+                            CalendarView()
+                        }
+                    Text("Сумма расходов - \(transactionsTotalAmount.formatAmount())")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.blue)
+                    Text("Расходы по категориям")
+                        .font(.subheadline)
+                }
                 
                 Chart(mainScreenViewModel.cachedExpensesByCategory) { expense in
                     SectorMark(
                         angle: .value("Сумма", expense.amount),
                         innerRadius: .ratio(0.5)
                     )
-                    .foregroundStyle(chartViewModel.getColor(for: expense.category))
+                    .foregroundStyle(chartViewModel.getColor(for: expense.category.title))
                 }
                 .frame(height: 150)
                 .padding()
@@ -73,10 +86,10 @@ struct ChartPieView: View {
                     ForEach(mainScreenViewModel.cachedExpensesByCategory) { expense in
                         HStack {
                             Circle()
-                                .fill(chartViewModel.getColor(for: expense.category))
+                                .fill(chartViewModel.getColor(for: expense.category.title))
                                 .frame(width: 12, height: 12)
                             
-                            Text(expense.category)
+                            Text(expense.category.title)
                                 .font(.system(size: 14))
                                 .foregroundColor(.primary)
                         }

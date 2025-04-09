@@ -49,6 +49,7 @@ struct AddExpenseView: View {
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button("Отмена") {
+                                viewModel.searchText = ""
                                 presentationMode.wrappedValue.dismiss()
                             }
                             .foregroundStyle(.red)
@@ -60,6 +61,7 @@ struct AddExpenseView: View {
                                     let transaction = Transaction(amount: -Int(amount)!, category: category)
                                     MainScreenViewModel.shared.transactions.append(transaction)
                                 }
+                                viewModel.searchText = ""
                                 presentationMode.wrappedValue.dismiss()
                             }
                             .disabled(amount.isEmpty || selectedCategory == nil)

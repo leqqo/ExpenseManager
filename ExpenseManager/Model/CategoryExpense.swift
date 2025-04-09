@@ -10,6 +10,9 @@ import Foundation
 struct CategoryExpense: Identifiable {
     
     let id = UUID()
-    let category: String
+    let category: Category
     let amount: Double
+    var title: String {
+        return category.title
+    }
 }

@@ -99,23 +99,18 @@ class CalendarViewModel: ObservableObject {
     func selectDate(_ date: Date) {
         if selectedStartDate == nil {
             selectedStartDate = date
-            //print(1)
         } else if selectedEndDate == nil && selectedStartDate != date {
             selectedEndDate = date
-            //print(6)
             if let start = selectedStartDate, let end = selectedEndDate, start > end {
                 swap(&selectedStartDate, &selectedEndDate)
-                //print(4)
             }
         } else {
             if selectedStartDate == date || selectedEndDate == date {
                 selectedStartDate = date
                 selectedEndDate = nil
-                //print(2)
             } else {
                 selectedStartDate = date
                 selectedEndDate = nil
-                //print(3)
             }
         }
     }

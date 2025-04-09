@@ -47,6 +47,7 @@ struct EditTransactionView: View {
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
                             Button("Отмена") {
+                                viewModel.searchText = ""
                                 presentationMode.wrappedValue.dismiss()
                             }
                         }
@@ -63,6 +64,7 @@ struct EditTransactionView: View {
                                     
                                 }
                                 
+                                viewModel.searchText = ""
                                 presentationMode.wrappedValue.dismiss()
                             }
                             .disabled(amount.isEmpty || category == nil)

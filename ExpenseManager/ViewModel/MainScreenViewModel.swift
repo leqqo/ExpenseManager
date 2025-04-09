@@ -31,20 +31,14 @@ class MainScreenViewModel: ObservableObject {
         }
     }
     
-    var cachedExpensesByCategory: [CategoryExpense] = []
+    @Published var cachedExpensesByCategory: [CategoryExpense] = []
     var groupedTransactions: [(key: String, value: [Transaction])] = []
     
     private func updateGroupedTransactions() {
         
         let now = Date()
-        let recentTransactions = transactions.filter { transaction in
-            if let daysDifference = Calendar.current.dateComponents([.day], from: transaction.date, to: now).day {
-                return daysDifference <= 13 // 2 недели
-            }
-            return false
-        }
         
-        let grouped = Dictionary(grouping: recentTransactions) { transaction in
+        let grouped = Dictionary(grouping: transactions) { transaction in
             
             let currentLocale = Locale.current.language.languageCode?.identifier
             let today = currentLocale == "ru" ? "Сегодня" : "Today"
@@ -75,7 +69,7 @@ class MainScreenViewModel: ObservableObject {
         let calendar = Calendar.current
         let today = Date()
         
-        let defaultStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: today))! // Первый день месяца
+        let defaultStartDate = calendar.date(from: calendar.dateComponents([.year, .month], from: today))!
         let defaultEndDate = calendar.date(byAdding: DateComponents(month: 1, second: -1), to: defaultStartDate)!
         
         if let startDate = startDate, let endDate = endDate {
@@ -88,8 +82,9 @@ class MainScreenViewModel: ObservableObject {
         
         let grouped = Dictionary(grouping: filteredTransactions, by: { $0.category.title })
         
-        cachedExpensesByCategory = grouped.map { (category, transactions) in
+        cachedExpensesByCategory = grouped.map { (_, transactions) in
             let totalAmount = transactions.reduce(0) { $0 + Double($1.amount) }
+            let category = transactions.first!.category
             return CategoryExpense(category: category, amount: totalAmount)
         }
         .sorted { $0.amount > $1.amount }
@@ -105,12 +100,9 @@ class MainScreenViewModel: ObservableObject {
             }
         }
         
-        // Сохранение категорий в UserDefaults
         private func saveTransactions() {
             do {
-                // Кодируем массив категорий в Data
                 let data = try JSONEncoder().encode(transactions)
-                // Сохраняем в UserDefaults
                 UserDefaults.standard.set(data, forKey: "transactions")
             } catch {
                 print("Не удалось сохранить транзакции: \(error)")
